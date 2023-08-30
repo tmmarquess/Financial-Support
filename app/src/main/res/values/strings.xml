@@ -4,4 +4,8 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_Finance">Finances</string>
+    <string-array name="commingArray">
+        <item>Income</item>
+        <item>Outcome</item>
+    </string-array>
 </resources>

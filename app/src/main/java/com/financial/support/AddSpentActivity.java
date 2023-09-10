@@ -7,15 +7,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.TextView;
 
 import com.financial.support.databinding.ActivityAddSpentBinding;
+import com.financial.support.enums.TransactionType;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class AddSpentActivity extends AppCompatActivity {
 
     private ActivityAddSpentBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +27,9 @@ public class AddSpentActivity extends AppCompatActivity {
         binding = ActivityAddSpentBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+
         Button chooseDate = binding.chooseDate;
+        Button save = binding.saveButton;
 
         chooseDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +55,26 @@ public class AddSpentActivity extends AppCompatActivity {
                         },
                         year, month, day);
                 datePickerDialog.show();
+            }
+        });
+
+        save.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+                double value = binding.transactionValue.getText().toString().isEmpty() ? 0:Double.valueOf(binding.transactionValue.getText().toString());
+                String description = binding.description.getText().toString();
+                String category = binding.category.getText().toString();
+                Date save_date;
+                try {
+                    save_date = format.parse(binding.chooseDate.getText().toString());
+                } catch (ParseException e) {
+                    save_date = null;
+                }
+                TransactionType type = binding.type.getSelectedItem().toString() == "Income" ? TransactionType.Income : TransactionType.Outcome;
+                finish();
             }
         });
 

@@ -1,55 +1,46 @@
 package com.financial.support.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Ignore;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 import com.financial.support.enums.Months;
 import com.financial.support.enums.TransactionType;
 
-public class FinancialMonth {
-    private Months month;
-    private int year;
-
-    private FixCommings fixCommings;
+public class FinancialMonth extends FinancialMonthDatabase{
+    @ColumnInfo
+    private FixComings fixComings;
+    @ColumnInfo
     private ArrayList<Transaction> transactions;
 
-    public FinancialMonth(Months month, int year, FixCommings fixCommings) {
-        this.month = month;
-        this.year = year;
-        this.fixCommings = fixCommings;
-        this.transactions = new ArrayList<Transaction>();
+    public FinancialMonth(Months month, int year, FixComings fixComings) {
+        super(month, year);
+        this.fixComings = fixComings;
+        this.transactions = new ArrayList<>();
     }
 
+    public FinancialMonth(Months month, int year, FixComings fixComings, ArrayList<Transaction> transactions) {
+        super(month, year);
+        this.fixComings = fixComings;
+        this.transactions = transactions;
+    }
+
+    @Ignore
     public FinancialMonth(Months month, int year) {
-        this.month = month;
-        this.year = year;
+        super(month, year);
 
-        this.fixCommings = null;
-        this.transactions = new ArrayList<Transaction>();
+        this.fixComings = null;
+        this.transactions = new ArrayList<>();
     }
 
-    public Months getMonth() {
-        return month;
+    public FixComings getFixComings() {
+        return fixComings;
     }
 
-    public void setMonth(Months month) {
-        this.month = month;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public FixCommings getFixCommings() {
-        return fixCommings;
-    }
-
-    public void setFixCommings(FixCommings fixCommings) {
-        this.fixCommings = fixCommings;
+    public void setFixComings(FixComings fixComings) {
+        this.fixComings = fixComings;
     }
 
     public void addTransaction(Transaction transaction) {
@@ -64,8 +55,12 @@ public class FinancialMonth {
         return this.transactions;
     }
 
+    public void setTransactions(ArrayList<Transaction> transactions){
+        this.transactions = transactions;
+    }
+
     public double getTotalAvailable() {
-        double total = fixCommings.getTotal();
+        double total = fixComings.getTotal();
         for (Transaction transaction : transactions) {
             total += transaction.getValue();
         }
@@ -74,7 +69,7 @@ public class FinancialMonth {
     }
 
     public double getTotalOutcomes() {
-        double total = fixCommings.getOutcomes();
+        double total = fixComings.getOutcomes();
         for (Transaction transaction : transactions) {
             if (transaction.getType() == TransactionType.Outcome) {
                 total += transaction.getValue();
@@ -85,7 +80,7 @@ public class FinancialMonth {
     }
 
     public double getTotalIncomes() {
-        double total = fixCommings.getIncomes();
+        double total = fixComings.getIncomes();
         for (Transaction transaction : transactions) {
             if (transaction.getType() == TransactionType.Income) {
                 total += transaction.getValue();

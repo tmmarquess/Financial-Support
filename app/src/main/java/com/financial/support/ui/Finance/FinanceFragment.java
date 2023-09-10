@@ -10,22 +10,21 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.financial.support.databinding.FragmentFinanceBinding;
 import com.financial.support.databinding.FragmentNotificationsBinding;
 
 public class FinanceFragment extends Fragment {
 
-    private FragmentNotificationsBinding binding;
+    private FragmentFinanceBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         com.financial.support.ui.Finance.FinanceViewModel financeViewModel =
                 new ViewModelProvider(this).get(com.financial.support.ui.Finance.FinanceViewModel.class);
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentFinanceBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        financeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

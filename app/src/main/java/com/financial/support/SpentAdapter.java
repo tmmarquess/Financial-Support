@@ -1,5 +1,6 @@
 package com.financial.support;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +9,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.financial.support.enums.TransactionType;
 import com.financial.support.model.Transaction;
 import com.financial.support.databinding.SpentItemBinding;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class SpentAdapter extends RecyclerView.Adapter<SpentVH> {
@@ -32,7 +35,16 @@ public class SpentAdapter extends RecyclerView.Adapter<SpentVH> {
     @Override
     public void onBindViewHolder(@NonNull SpentVH holder, int position) {
         holder.spentDescription.setText(spents.get(position).getDescription().toString());
-        holder.spentValue.setText("R$"+ spents.get(position).getValue());
+        holder.spentDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(spents.get(position).getDate()));
+
+        if(spents.get(position).getType() == TransactionType.Outcome){
+            holder.spentValue.setText("R$"+ spents.get(position).getValue() * -1);
+            holder.spentValue.setTextColor(Color.parseColor("#C23D3D"));
+        }else{
+            holder.spentValue.setText("R$"+ spents.get(position).getValue());
+            holder.spentValue.setTextColor(Color.parseColor("#2FAD34"));
+        }
+
     }
 
     @Override
@@ -46,6 +58,8 @@ class SpentVH extends RecyclerView.ViewHolder{
     TextView spentDescription;
     TextView spentValue;
 
+    TextView spentDate;
+
     private SpentAdapter adapter;
 
     private SpentItemBinding binding;
@@ -56,6 +70,7 @@ class SpentVH extends RecyclerView.ViewHolder{
 
         spentDescription = itemView.findViewById(R.id.descText);
         spentValue = itemView.findViewById(R.id.price);
+        spentDate = itemView.findViewById(R.id.dateText);
     }
 
     public SpentVH linkAdapter(SpentAdapter adapter){

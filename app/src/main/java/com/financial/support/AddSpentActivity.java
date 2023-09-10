@@ -80,8 +80,11 @@ public class AddSpentActivity extends AppCompatActivity {
                 } catch (ParseException e) {
                     save_date = null;
                 }
-                TransactionType type = binding.type.getSelectedItem().toString() == "Income" ? TransactionType.Income : TransactionType.Outcome;
+                TransactionType type = binding.type.getSelectedItem().toString().equals("Income") ? TransactionType.Income : TransactionType.Outcome;
 
+                if(value == 0 || description.isEmpty()){
+                    finish();
+                }
                 Transaction newTransaction = new Transaction(value, description, category, save_date, type);
 
                 replyIntent.putExtra("newTransaction", newTransaction);

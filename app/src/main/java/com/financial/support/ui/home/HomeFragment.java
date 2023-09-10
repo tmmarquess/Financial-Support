@@ -17,11 +17,14 @@ import com.financial.support.SpentAdapter;
 import com.financial.support.databinding.FragmentHomeBinding;
 import com.financial.support.enums.TransactionType;
 import com.financial.support.model.Transaction;
+import com.financial.support.repository.TransactionRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class HomeFragment extends Fragment {
 
@@ -31,6 +34,7 @@ public class HomeFragment extends Fragment {
     private List<Transaction> itensList;
 
     private SpentAdapter adapter;
+    private TransactionRepository transactionRepository;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,8 +44,17 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        itensList = new LinkedList<>();
-        itensList.add(new Transaction(50.5, "batata", "teste", new Date(), TransactionType.Outcome));
+        transactionRepository = new TransactionRepository(this.getActivity().getApplication());
+
+        try {
+            itensList = transactionRepository.getAllTransactions().get();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+//        itensList = new LinkedList<>();
+
 
         RecyclerView recyclerView = binding.SpentList;
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -69,6 +82,7 @@ public class HomeFragment extends Fragment {
             Transaction transaction = (Transaction) data.getSerializableExtra("newTransaction");
             System.out.println(transaction);
             itensList.add(new Transaction(transaction.getValue(), transaction.getDescription(), transaction.getCategory(), transaction.getDate(), transaction.getType()));
+            transactionRepository.addTransaction(transaction);
             adapter.notifyItemInserted(itensList.size() - 1);
         }
     }

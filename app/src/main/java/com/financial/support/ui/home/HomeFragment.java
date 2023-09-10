@@ -5,21 +5,32 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.financial.support.AddSpentActivity;
+import com.financial.support.SpentAdapter;
 import com.financial.support.databinding.FragmentHomeBinding;
+import com.financial.support.enums.TransactionType;
+import com.financial.support.model.Transaction;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
+    public static final int NEW_TRANSACTION_ACTIVITY_REQUEST_CODE = 1;
+
     private FragmentHomeBinding binding;
+    private List<Transaction> itensList;
+
+    private SpentAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -29,17 +40,13 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        itensList = new LinkedList<>();
+        itensList.add(new Transaction(50.5, "batata", "teste", new Date(), TransactionType.Outcome));
 
-        final EditText editText = binding.textEdit;
-        final Button editButton = binding.button;
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                textView.setText(editText.getText().toString());
-            }
-        });
+        RecyclerView recyclerView = binding.SpentList;
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        adapter = new SpentAdapter(itensList);
+        recyclerView.setAdapter(adapter);
 
         final FloatingActionButton addButton = binding.AddButton;
 
@@ -48,11 +55,22 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent addScreen = new Intent(getContext(), AddSpentActivity.class);
-                startActivity(addScreen);
+                startActivityForResult(addScreen, NEW_TRANSACTION_ACTIVITY_REQUEST_CODE);
             }
         });
 
         return root;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == NEW_TRANSACTION_ACTIVITY_REQUEST_CODE && resultCode == -1) {
+            Transaction transaction = (Transaction) data.getSerializableExtra("newTransaction");
+            System.out.println(transaction);
+            itensList.add(new Transaction(transaction.getValue(), transaction.getDescription(), transaction.getCategory(), transaction.getDate(), transaction.getType()));
+            adapter.notifyItemInserted(itensList.size() - 1);
+        }
     }
 
     @Override

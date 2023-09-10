@@ -1,15 +1,10 @@
 package com.financial.support.model;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 
-import java.util.ArrayList;
-import java.util.Date;
 
 import com.financial.support.enums.Months;
-import com.financial.support.enums.TransactionType;
 
 @Entity(primaryKeys = {"month", "year"})
 public class FinancialMonthDatabase {

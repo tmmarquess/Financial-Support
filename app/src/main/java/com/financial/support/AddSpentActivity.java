@@ -3,13 +3,16 @@ package com.financial.support;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 
 import com.financial.support.databinding.ActivityAddSpentBinding;
+import com.financial.support.databinding.SpentItemBinding;
 import com.financial.support.enums.TransactionType;
+import com.financial.support.model.Transaction;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,11 +23,14 @@ public class AddSpentActivity extends AppCompatActivity {
 
     private ActivityAddSpentBinding binding;
 
+    private SpentItemBinding itemBinding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityAddSpentBinding.inflate(getLayoutInflater());
+
         setContentView(binding.getRoot());
 
 
@@ -62,6 +68,7 @@ public class AddSpentActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                Intent replyIntent = new Intent();
                 SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
                 double value = binding.transactionValue.getText().toString().isEmpty() ? 0:Double.valueOf(binding.transactionValue.getText().toString());
@@ -74,6 +81,12 @@ public class AddSpentActivity extends AppCompatActivity {
                     save_date = null;
                 }
                 TransactionType type = binding.type.getSelectedItem().toString() == "Income" ? TransactionType.Income : TransactionType.Outcome;
+
+                Transaction newTransaction = new Transaction(value, description, category, save_date, type);
+
+                replyIntent.putExtra("newTransaction", newTransaction);
+                setResult(RESULT_OK, replyIntent);
+
                 finish();
             }
         });

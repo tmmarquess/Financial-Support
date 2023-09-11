@@ -13,8 +13,10 @@ import com.financial.support.enums.TransactionType;
 import com.financial.support.model.Transaction;
 import com.financial.support.databinding.SpentItemBinding;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class SpentAdapter extends RecyclerView.Adapter<SpentVH> {
 
@@ -38,10 +40,10 @@ public class SpentAdapter extends RecyclerView.Adapter<SpentVH> {
         holder.spentDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(spents.get(position).getDate()));
 
         if(spents.get(position).getType() == TransactionType.Outcome){
-            holder.spentValue.setText("R$"+ spents.get(position).getValue() * -1);
+            holder.spentValue.setText(NumberFormat.getCurrencyInstance(new Locale("pt", "BR")).format(spents.get(position).getValue() * -1));
             holder.spentValue.setTextColor(Color.parseColor("#C23D3D"));
         }else{
-            holder.spentValue.setText("R$"+ spents.get(position).getValue());
+            holder.spentValue.setText(NumberFormat.getCurrencyInstance(new Locale("pt", "BR")).format(spents.get(position).getValue()));
             holder.spentValue.setTextColor(Color.parseColor("#2FAD34"));
         }
 

@@ -62,7 +62,11 @@ public class FinancialMonth extends FinancialMonthDatabase{
     public double getTotalAvailable() {
         double total = fixComings.getTotal();
         for (Transaction transaction : transactions) {
-            total += transaction.getValue();
+            if(transaction.getType() == TransactionType.Outcome){
+                total += transaction.getValue() * -1;
+            }else{
+                total += transaction.getValue();
+            }
         }
 
         return total;
@@ -72,7 +76,7 @@ public class FinancialMonth extends FinancialMonthDatabase{
         double total = fixComings.getOutcomes();
         for (Transaction transaction : transactions) {
             if (transaction.getType() == TransactionType.Outcome) {
-                total += transaction.getValue();
+                total += transaction.getValue() * -1;
             }
         }
 

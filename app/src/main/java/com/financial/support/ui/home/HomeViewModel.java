@@ -10,18 +10,19 @@ import java.util.List;
 
 public class HomeViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
+    private final MutableLiveData<String> total;
 
     private final MutableLiveData<List<Transaction>> transactionList;
 
+
     public HomeViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        total = new MutableLiveData<>();
+        total.setValue("R$xx,xx");
 
         transactionList = new MutableLiveData<>();
     }
 
     public LiveData<String> getText() {
-        return mText;
+        return total;
     }
 }

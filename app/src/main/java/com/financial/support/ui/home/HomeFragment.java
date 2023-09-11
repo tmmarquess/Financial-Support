@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -20,10 +21,13 @@ import com.financial.support.model.Transaction;
 import com.financial.support.repository.TransactionRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 public class HomeFragment extends Fragment {
@@ -35,6 +39,8 @@ public class HomeFragment extends Fragment {
 
     private SpentAdapter adapter;
     private TransactionRepository transactionRepository;
+
+    private double currentValue;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -53,8 +59,18 @@ public class HomeFragment extends Fragment {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-//        itensList = new LinkedList<>();
 
+        TextView moneyLeft = binding.MoneyLeft;
+        currentValue = 0;
+        for(Transaction t: itensList){
+            if(t.getType() == TransactionType.Outcome){
+                currentValue += t.getValue() * -1;
+            }else{
+                currentValue += t.getValue();
+            }
+        }
+
+        moneyLeft.setText(NumberFormat.getCurrencyInstance(new Locale("pt", "BR")).format(currentValue));
 
         RecyclerView recyclerView = binding.SpentList;
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -80,10 +96,19 @@ public class HomeFragment extends Fragment {
 
         if (requestCode == NEW_TRANSACTION_ACTIVITY_REQUEST_CODE && resultCode == -1) {
             Transaction transaction = (Transaction) data.getSerializableExtra("newTransaction");
-            System.out.println(transaction);
-            itensList.add(new Transaction(transaction.getValue(), transaction.getDescription(), transaction.getCategory(), transaction.getDate(), transaction.getType()));
+            itensList.add(transaction);
             transactionRepository.addTransaction(transaction);
             adapter.notifyItemInserted(itensList.size() - 1);
+            TextView moneyLeft = binding.MoneyLeft;
+            currentValue = 0;
+            for(Transaction t: itensList){
+                if(t.getType() == TransactionType.Outcome){
+                    currentValue += t.getValue() * -1;
+                }else{
+                    currentValue += t.getValue();
+                }
+            }
+            moneyLeft.setText(NumberFormat.getCurrencyInstance(new Locale("pt", "BR")).format(currentValue));
         }
     }
 

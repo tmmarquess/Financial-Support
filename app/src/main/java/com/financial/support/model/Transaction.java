@@ -45,11 +45,7 @@ public class Transaction implements Serializable {
     }
 
     public double getValue() {
-        if (getType() == TransactionType.Outcome) {
-            return this.value * -1;
-        } else {
-            return this.value;
-        }
+        return this.value;
     }
 
     public void setValue(double value) {

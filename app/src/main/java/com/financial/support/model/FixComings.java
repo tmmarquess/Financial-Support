@@ -56,7 +56,7 @@ public class FixComings extends FixComingsDatabase{
         double total = 0;
         for (Transaction come : comings) {
             if (come.getType() == TransactionType.Outcome) {
-                total += come.getValue();
+                total += come.getValue() * -1;
             }
         }
         return total;
@@ -65,7 +65,11 @@ public class FixComings extends FixComingsDatabase{
     public double getTotal() {
         double total = 0;
         for (Transaction come : comings) {
-            total += come.getValue();
+            if(come.getType() == TransactionType.Outcome){
+                total += come.getValue() * -1;
+            }else{
+                total += come.getValue();
+            }
         }
         return total;
     }

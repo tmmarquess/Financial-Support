@@ -31,7 +31,6 @@ public class TransactionRepository {
     public void addTransaction(Transaction t){
         AppDatabase.databaseWriteExecutor.execute(() -> {
             transactionDAO.insert(t);
-            System.out.println("==========ADDED=========");
         });
     }
 }
